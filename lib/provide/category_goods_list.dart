@@ -3,10 +3,12 @@ import '../model/categoryGoodsList.dart';
 
 class CategoryGoodsListProvide with ChangeNotifier {
   List<CategoryListData> goodsList = [];
-  getCategoryGoodsList(List<CategoryListData> list, bool isNewCategory) {
-    if (isNewCategory) {
-      goodsList.clear();
-    }
+  getCategoryGoodsList(List<CategoryListData> list) {
+    goodsList = list;
+    notifyListeners();
+  }
+
+  getMoreGoodsList(List<CategoryListData> list) {
     goodsList.addAll(list);
     notifyListeners();
   }

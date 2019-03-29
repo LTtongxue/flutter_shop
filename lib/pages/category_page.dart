@@ -8,6 +8,7 @@ import '../model/categoryGoodsList.dart';
 import '../provide/child_category.dart';
 import '../provide/category_goods_list.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class CategoryPage extends StatefulWidget {
   _CategoryPageState createState() => _CategoryPageState();
@@ -43,6 +44,7 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
   @override
   void initState() {
     _getCategory();
+    _getMallGoods();
     super.initState();
   }
 
@@ -107,7 +109,6 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
       });
       Provide.value<ChildCategoryProvide>(context)
           .getChildCategory(list[0].bxMallSubDto, list[0].mallCategoryId);
-      _getMallGoods();
     });
   }
 
@@ -122,7 +123,7 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
       CategoryGoodsListModel categoryGoodsListModel =
           CategoryGoodsListModel.fromJson(data);
       Provide.value<CategoryGoodsListProvide>(context)
-          .getCategoryGoodsList(categoryGoodsListModel.data, true);
+          .getCategoryGoodsList(categoryGoodsListModel.data);
     });
   }
 }
@@ -194,10 +195,10 @@ class _RightCategoryNavState extends State<RightCategoryNav> {
           CategoryGoodsListModel.fromJson(data);
       if (categoryGoodsListModel.data == null) {
         Provide.value<CategoryGoodsListProvide>(context)
-            .getCategoryGoodsList([], true);
+            .getCategoryGoodsList([]);
       } else {
         Provide.value<CategoryGoodsListProvide>(context)
-            .getCategoryGoodsList(categoryGoodsListModel.data, true);
+            .getCategoryGoodsList(categoryGoodsListModel.data);
       }
     });
   }
@@ -247,7 +248,20 @@ class _CategoryGoodsListState extends State<CategoryGoodsList> {
                     },
                   ),
                   loadMore: () async {
-                    _getMoreList();
+                    if (Provide.value<ChildCategoryProvide>(context)
+                            .noMoreText ==
+                        '没有更多了') {
+                      Fluttertoast.showToast(
+                          msg: "已经到底了",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.CENTER,
+                          timeInSecForIos: 1,
+                          backgroundColor: Colors.pink,
+                          textColor: Colors.white,
+                          fontSize: 16.0);
+                    } else {
+                      _getMoreList();
+                    }
                   },
                 )),
           );
@@ -259,9 +273,6 @@ class _CategoryGoodsListState extends State<CategoryGoodsList> {
   }
 
   void _getMoreList() async {
-    if (Provide.value<ChildCategoryProvide>(context).noMoreText == '没有更多了') {
-      return;
-    }
     Provide.value<ChildCategoryProvide>(context).addPage();
     var data = {
       'categoryId': Provide.value<ChildCategoryProvide>(context).categoryId,
@@ -275,11 +286,19 @@ class _CategoryGoodsListState extends State<CategoryGoodsList> {
           CategoryGoodsListModel.fromJson(data);
       if (categoryGoodsListModel.data == null) {
         Provide.value<ChildCategoryProvide>(context).changeNoMore('没有更多了');
+        Fluttertoast.showToast(
+            msg: "没有更多了",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIos: 1,
+            backgroundColor: Colors.pink,
+            textColor: Colors.white,
+            fontSize: 16.0);
         print(
             'page == ${Provide.value<ChildCategoryProvide>(context).noMoreText}');
       } else {
         Provide.value<CategoryGoodsListProvide>(context)
-            .getCategoryGoodsList(categoryGoodsListModel.data, false);
+            .getMoreGoodsList(categoryGoodsListModel.data);
       }
     });
   }
