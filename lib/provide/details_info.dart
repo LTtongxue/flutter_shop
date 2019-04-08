@@ -6,9 +6,23 @@ import 'dart:convert';
 class DetailsInfoProvide with ChangeNotifier {
   DetailsModel goodsInfo;
 
-  getGoodsInfo(String id) {
+  bool isLeft = true;
+  bool isRight = false;
+
+  changeLeftAndRight(String changeState) {
+    if (changeState == 'left') {
+      isLeft = true;
+      isRight = false;
+    } else {
+      isLeft = false;
+      isRight = true;
+    }
+    notifyListeners();
+  }
+
+  getGoodsInfo(String id) async {
     var formData = {'goodId': id};
-    request('getGoodDetailById', formData: formData).then((val) {
+    await request('getGoodDetailById', formData: formData).then((val) {
       var data = json.decode(val.toString());
       print('goodsInfo = $data');
       goodsInfo = DetailsModel.fromJson(data);
