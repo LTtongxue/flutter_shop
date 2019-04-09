@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provide/provide.dart';
 import '../../provide/details_info.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class DetailsWeb extends StatelessWidget {
   @override
@@ -21,7 +22,12 @@ class DetailsWeb extends StatelessWidget {
             ),
           );
         } else {
-          return Text('暂无数据');
+          return Container(
+            width: ScreenUtil().setWidth(750),
+            alignment: Alignment.center,
+            padding: EdgeInsets.all(10.0),
+            child: Text('暂无数据'),
+          );
         }
       },
     );
