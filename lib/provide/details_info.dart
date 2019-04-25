@@ -24,7 +24,7 @@ class DetailsInfoProvide with ChangeNotifier {
     var formData = {'goodId': id};
     await request('getGoodDetailById', formData: formData).then((val) {
       var data = json.decode(val.toString());
-      print('goodsInfo = $data');
+      // print('goodsInfo = $data');
       goodsInfo = DetailsModel.fromJson(data);
       notifyListeners();
     });
